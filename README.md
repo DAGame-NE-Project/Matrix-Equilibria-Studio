@@ -30,7 +30,7 @@ For equilibrium solvers, we divide them into two different kinds, one-shot solve
 
 ### Functions
 
-`solve(game)` given a game, 
+`solve(game, info)` given a game and some info, return a strategy and new info.
 
 ## Algorithm
 
