@@ -103,6 +103,6 @@ if __name__ == '__main__':
     hedge = onlineHedge(n=5,T=20,a=1)
     #run to update weights
     
-    hedge.run
+    hedge.run()
     predictions = []
     predictions.append(hedge.predict(expert_predictions[:]))
