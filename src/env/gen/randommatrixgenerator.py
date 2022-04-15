@@ -1,6 +1,9 @@
 import numpy as np
 
-def RandomMatrixGenerator(players, actionspace):
+def RandomMatrixGenerator(args):
+
+    players = args['players']
+    actionspace = args['actionspace']
 
     assert players == len(actionspace), "The length of actionspace should equal to #player"
 
