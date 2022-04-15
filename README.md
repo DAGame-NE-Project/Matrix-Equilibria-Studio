@@ -39,6 +39,21 @@ For equilibrium solvers, we divide them into two different kinds, one-shot solve
 1. Support Enumeration.
 2. Lemke-Howson.
 
+### Approximate NE
+
+1. KPS-3/4 (easy)
+2. DMP-0.5 (easy)
+3. Czumaj-0.38 (easy)
+4. DMP-0.38 (hard)
+5. BBM-0.36 (hard)
+6. TS-0.3393 (hard)
+7. Gao (very hard)
+
+### Special Case NE
+
+1. solve zero-sum games by LP (normal)
+2. symmetric games-1/3 (hard)
+
 ### Online Learning (CCE)
 
 1. Fictitious Play.
