@@ -2,8 +2,8 @@ import numpy as np
 
 def RandomMatrixGenerator(args):
 
-    players = args['players']
-    actionspace = args['actionspace']
+    players = args.players
+    actionspace = args.actionspace
 
     assert players == len(actionspace), "The length of actionspace should equal to #player"
 
@@ -19,11 +19,12 @@ def RandomMatrixGenerator(args):
                 ui = ui / ui.max()
             u.append(np.expand_dims(ui, players))
         u = np.concatenate(u, players)
+        print("u:\n", u)
 
         def U(a):
 
             assert players == len(a), "The length of jointaction should equal to #player"
-            return u(tuple(a))
+            return u[tuple(a)]
 
         return players, actionspace, U
 
