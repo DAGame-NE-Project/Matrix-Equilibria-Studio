@@ -12,11 +12,11 @@ class MatrixGame(object):
     def getActionSpaceID(self, ID):
         return deepcopy(self.actionspace[ID])
 
-    def play(a):
-        return deepcopy(U(a))
+    def play(self, a):
+        return deepcopy(self.U(a))
 
-    def playID(a, ID):
-        return deepcopy(U(a)[ID])
+    def playID(self, a, ID):
+        return deepcopy(self.U(a)[ID])
 
     def reset(self):
         self.players, self.actionspace, self.U = self.generator()

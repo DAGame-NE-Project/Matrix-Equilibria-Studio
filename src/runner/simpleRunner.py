@@ -1,9 +1,10 @@
-
+from tqdm import tqdm
 class SimpleRunner(object):
 
-    def __init__(self, game, solver):
+    def __init__(self, game, solver, args):
         self.game = game
         self.solver = solver
+        self.args = args
         self.empty()
         self.reset_game()
 
@@ -12,8 +13,8 @@ class SimpleRunner(object):
         self.info.append(self.current_info)
         self.strategy.append(self.current_strategy)
 
-    def episode(self, timeInterval = 1000000):
-        for i in range(timeInterval):
+    def episode(self, timeInterval = 100000):
+        for i in tqdm(range(timeInterval)):
             self.step()
 
     def empty(self):
