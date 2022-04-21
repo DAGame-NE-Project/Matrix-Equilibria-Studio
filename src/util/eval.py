@@ -6,9 +6,9 @@ def _epsNE_with_utility(players, actions, strategies, utility):
 
     eps = []
 
-    for player_id in range(game.players):
-        n_util = np.moveaxis(utility, player_id, -1)
-        for other_player_id in range(game.players):
+    for player_id in range(players):
+        n_util = np.moveaxis(utility[..., player_id], player_id, -1)
+        for other_player_id in range(players):
             if other_player_id != player_id:
                 n_util = strategies[other_player_id] @ n_util
         eps.append(float(np.max(n_util) - strategies[player_id] @ n_util))
@@ -22,13 +22,13 @@ def dfs_parse_utility(players, actions, play, cur_action, utility, player_id, sa
     if player_id == players:
         tmp = np.array([0.] * players)
         for sample_id in range(samples):
-            tmp += play(tmp_action)
+            tmp += play(cur_action)
         utility.append(tmp / samples)
         return
 
     for action_id in range(actions[player_id]):
         cur_action[player_id] = action_id
-        dfs_parse_utility(players, actions, U, cur_action, array, player_id + 1, samples)
+        dfs_parse_utility(players, actions, play, cur_action, utility, player_id + 1, samples)
 
 # return maximal eps and eps for each player with game utility matrix
 
@@ -39,5 +39,6 @@ def epsNE_with_sample(game, strategies, samples = 1):
     actions = game.getActionSpace()
     cur_action = [0] * players
     dfs_parse_utility(players, actions, game.play, cur_action, utility, 0, samples)
-    utility = np.array(utility).reshape(tuple(actions))
+    utility = np.array(utility).reshape(tuple(actions) + (players,))
     return _epsNE_with_utility(players, actions, strategies, utility)
+
