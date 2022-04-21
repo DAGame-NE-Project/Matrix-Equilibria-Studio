@@ -13,15 +13,16 @@ class Player(object):
     def solve(self, game, info):
 
         actions = game.getActionSpace()
+        players = game.players
         if info is None or info['solver'] != "FictitiousPlay":
             info = {
                 'solver': "FictitiousPlay",
-                'agents_history_reward': [[0.0 for action_id in range(actions[player_id])] for player_id in range(game.players)],
-                'overall_policy': [[0.0 for action_id in range(actions[player_id])] for player_id in range(game.players)],
+                'agents_history_reward': [[0.0 for action_id in range(actions[player_id])] for player_id in range(players)],
+                'overall_policy': [[0.0 for action_id in range(actions[player_id])] for player_id in range(players)],
             }
 
         ret = tuple()
-        for player_id in range(game.players):
+        for player_id in range(players):
             maximal_reward = max(info['agents_history_reward'][player_id])
             choices = []
             for action_id in range(actions[player_id]):
@@ -30,7 +31,12 @@ class Player(object):
             ret = ret + tuple([int(np.random.choice(choices))])
         self.update_info(game, ret, info)
 
-        return ret, info
+        tmp_ret = ret
+        ret = [np.zeros(actions[player_id]) for player_id in range(players)]
+        for player_id in range(players):
+            ret[player_id][tmp_ret[player_id]] = 1.
+        # strategy action info
+        return ret, tmp_ret, info
 
     def update_info(self, game, ret, info):
 
@@ -41,6 +47,9 @@ class Player(object):
                 tmp_ret[player_id] = action_id
                 info['agents_history_reward'][player_id][action_id] += game.playID(tmp_ret, player_id)
             info['overall_policy'][player_id][ret[player_id]] += 1
+
+    def reset(self):
+        pass
 
 #    def __init__(self, action_len, utility, id):
 #        """

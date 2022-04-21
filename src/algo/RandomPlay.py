@@ -1,4 +1,5 @@
 import random
+
 class RandomPlay(object):
 
     def __init__(self, args):
@@ -6,9 +7,10 @@ class RandomPlay(object):
 
     def solve(self, game, info):
         actions = game.getActionSpace()
-        ret = tuple()
-        for player_id in range(game.players):
-            ret = ret + tuple([random.randint(0, actions[player_id] - 1)])
+        players = game.players
+        ret = [np.zeros(actions[player_id]) for player_id in range(players)]
+        for player_id in range(players):
+            ret[player_id][random.randint(0, actions[player_id] - 1)] = 1.
         return ret, {"solver": "RandomPlayer"}
 
     def reset(self):
