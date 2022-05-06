@@ -4,6 +4,7 @@ import numpy as np
 class Player(object):
 
     def __init__(self, args):
+
         self.args = args
         if hasattr(args, 'epsilon'):
             self.epsilon = float(args.epsilon)
@@ -29,7 +30,7 @@ class Player(object):
                 if info['agents_history_reward'][player_id][action_id] + self.epsilon >= maximal_reward:
                     choices.append(action_id)
             ret = ret + tuple([int(np.random.choice(choices))])
-        self.update_info(game, ret, info)
+        self._update_info(game, ret, info)
 
         tmp_ret = ret
         ret = [np.zeros(actions[player_id]) for player_id in range(players)]
@@ -38,7 +39,7 @@ class Player(object):
         # strategy action info
         return ret, tmp_ret, info
 
-    def update_info(self, game, ret, info):
+    def _update_info(self, game, ret, info):
 
         actions = game.getActionSpace()
         for player_id in range(game.players):
