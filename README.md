@@ -36,18 +36,19 @@ For equilibrium solvers, we divide them into two different kinds, one-shot solve
 
 ### Traditional (NE)
 
-1. Support Enumeration.
-2. Lemke-Howson.
+1. Support Enumeration. (DONE)
+2. Lemke-Howson. (DONE)
 
 ### Approximate NE
 
-1. KPS-3/4 (easy)
-2. DMP-0.5 (easy)
-3. Czumaj-0.38 (easy)
-4. DMP-0.38 (hard)
-5. BBM-0.36 (hard)
-6. TS-0.3393 (hard)
+1. KPS-3/4 (easy) (DONE)
+2. DMP-0.5 (easy) (DONE)
+3. Czumaj-0.38 (easy) (DONE)
+4. DMP-0.38 (hard) (DONE)
+5. BBM-0.36 (hard) (DONE)
+6. TS-0.3393 (hard) (TO BE DONE)
 7. Gao (very hard)
+8. 1/3 (hard) (TO BE DONE)
 
 ### Special Case NE
 
@@ -56,10 +57,10 @@ For equilibrium solvers, we divide them into two different kinds, one-shot solve
 
 ### Online Learning (CCE)
 
-1. Fictitious Play.
-2. Hedge.
-3. Regret Matching.
-4. Multiplicative Weights Update.
+1. Fictitious Play. (DONE)
+2. Hedge. (DONE)
+3. Regret Matching. (DONE)
+4. Multiplicative Weights Update. (DONE)
 
 ### Evolutionary (ESS?)
 
@@ -71,3 +72,6 @@ For equilibrium solvers, we divide them into two different kinds, one-shot solve
 2. Fictitious Play (Continuous Action Space).
 
 ### Deep Learning
+
+1. Double Oracle (Structure).
+2. PSRO.
