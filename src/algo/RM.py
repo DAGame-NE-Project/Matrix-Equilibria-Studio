@@ -1,6 +1,6 @@
 import numpy as np
 
-class Player:
+class Player(object):
 
     def __init__(self, args):
 
@@ -27,18 +27,21 @@ class Player:
         for player_id in range(players):
             policy = np.array(info['agents_regrets'][player_id])
             policy = np.expand_dims(policy, axis = 1).max(axis = 1, initial = 0)
+            if np.sum(policy) <= self.epsilon:
+                policy = np.ones_like(policy)
             policy = policy / np.sum(policy)
             ret.append(policy)
             tmp_ret = tmp_ret + tuple([int(np.random.choice(np.array(range(actions[player_id])), p = policy))])
 
-        self._update_info(game, tmp_ret, info)
+
+        self._update_info(game, tmp_ret, ret, info)
 
         for player_id in range(players):
             info['overall_policy'][player_id] += ret[player_id]
 
         return ret, tmp_ret, info
 
-    def _update_info(self, game, ret, info):
+    def _update_info(self, game, ret, policy, info):
 
         actions = game.getActionSpace()
         for player_id in range(game.players):
@@ -48,9 +51,12 @@ class Player:
                 tmp_ret[player_id] = action_id
                 u = game.playID(tmp_ret, player_id)
                 tmp_rewards.append(u)
-            expected_rewards = np.array(tmp_rewards).dot(ret[player_id])
+            expected_rewards = np.array(tmp_rewards).dot(policy[player_id])
             for action_id in range(actions[player_id]):
-                info['agents_regrets'][player_id][action_id] = tmp_rewards[action_id] - expected_rewards
+                info['agents_regrets'][player_id][action_id] += tmp_rewards[action_id] - expected_rewards
+
+    def reset(self):
+        pass
 
 #    def __init__(self, experts):
 #        self.sum_p = np.full(3, 0.)

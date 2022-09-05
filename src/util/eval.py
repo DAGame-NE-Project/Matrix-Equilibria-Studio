@@ -1,10 +1,13 @@
 import numpy as np
 
-# return maximal eps and eps for each player with game utility matrix
+# return
+# ANE: maximal eps and that for each player with game utility matrix
+# WSNE: maximal well-supported eps and that for each player with game utility matrix
 
-def _epsNE_with_utility(players, actions, strategies, utility):
+def _epsNE_with_utility(players, actions, strategies, utility, NON_ZERO=1e-10):
 
     eps = []
+    epsWS = []
 
     for player_id in range(players):
         n_util = np.moveaxis(utility[..., player_id], player_id, -1)
@@ -12,8 +15,12 @@ def _epsNE_with_utility(players, actions, strategies, utility):
             if other_player_id != player_id:
                 n_util = strategies[other_player_id] @ n_util
         eps.append(float(np.max(n_util) - strategies[player_id] @ n_util))
+        epsWS.append(float(np.max(n_util) - np.min(np.where(strategies[player_id] > NON_ZERO, n_util, np.ones_like(n_util)))))
 
-    return max(eps), eps
+    ret = []
+    ret.append((max(eps), eps.copy()))
+    ret.append((max(epsWS), epsWS.copy()))
+    return ret
 
 # parse utility matrix from interface game.play
 

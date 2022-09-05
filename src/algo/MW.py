@@ -6,6 +6,7 @@ class MW(object):
 
         self.args = args
         if hasattr(args, 'type'):
+            assert args.type in ["linear", "exponential"]
             self.type = args.type
         else:
 #            self.type = "linear"
