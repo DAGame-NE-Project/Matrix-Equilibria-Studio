@@ -9,7 +9,7 @@ class Hedge(object):
         if hasattr(args, 'epsilon'):
             self.epsilon = float(args.epsilon)
         else:
-            self.epsilon = 0
+            self.epsilon = 0.003 # sqrt(log(players)/T)
 
     def solve(self, game, info):
 
