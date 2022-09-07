@@ -119,3 +119,56 @@ def BestZeroSum(R, C, NON_ZERO=1e-10):
     ret_y, regret_y = BestR(S_R, neg_S_C, R)
     epsWS = max(regret_x, regret_y)
     return (ret_x, ret_y), epsWS
+
+
+if __name__ == '__main__':
+    # test BestR
+    # extended matching pennies
+    R = np.array([[0, 1, 0], [1, 0, 1]])
+    S_R = np.array([0, 1])
+    neg_S_C = np.array([])
+    print(BestR(S_R, neg_S_C, R))
+
+    C = 1 - R
+    S_C = np.array([0, 1, 2])
+    neg_S_R = np.array([])
+    print(BestC(S_C, neg_S_R, C))
+
+    # test paper-scissors-rock
+    R = np.array([[0.5, 1, 0], [0, 0.5, 1], [1, 0, 0.5]])
+    C = 1 - R
+    S_R = np.array([0, 1])
+    S_C = np.array([0, 1])
+    neg_S_R = np.array([2])
+    neg_S_C = np.array([2])
+    print(BestR(S_R, neg_S_C, R))
+    print(BestC(S_C, neg_S_R, C))
+
+    S_R = np.array([0, 1, 2])
+    S_C = np.array([0, 1, 2])
+    neg_S_R = np.array([])
+    neg_S_C = np.array([])
+    print(BestR(S_R, neg_S_C, R))
+    print(BestC(S_C, neg_S_R, C))
+
+    # test BestPure
+    # prisoner's dilemma
+    R = np.array([[1/2, 0], [1, 2/3]])
+    C = np.transpose(R)
+    print(BestPure(R, C))
+
+    # test Best2times2
+    # extended matching pennies
+    R = np.array([[0, 1, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
+    C = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [1, 0, 0, 1], [1, 0, 1, 0]])
+    print(Best2times2(R, C))
+
+    # test shifting probability
+    R = np.array([[1/3-0.01, 1], [0, 0]])
+    C = np.array([[1, 1/3-0.01], [0, 0]])
+    print((R-C)/2, BestZeroSum(R, C))
+
+    # test all
+    R = np.array([[0.5, 1, 0], [0, 0.5, 1], [1, 0, 0.5]])
+    C = 1 - R
+    print(solve(R, C))
