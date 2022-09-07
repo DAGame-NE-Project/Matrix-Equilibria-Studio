@@ -8,8 +8,7 @@ def solve(R, C, NON_ZERO=1e-10):
     epsWSs = [1.0 for _ in range(3)]
     strategy_pairs[0], epsWSs[0] = BestPure(R, C)
     strategy_pairs[1], epsWSs[1] = Best2times2(R, C)
-    strategy_pairs[2], epsWSs[2] = BestZeroSum(R, C, NON_ZERO)
-    ret_idx = np.argmin(epsWSs)[0]
+    ret_idx = np.argmin(epsWSs, keepdims=True)[0]
     return strategy_pairs[ret_idx]
 
 
@@ -17,18 +16,19 @@ def BestR(S_R, neg_S_C, R):
     # find the best eps-WSNE of y
     action_num_x, action_num_y = R.shape
     # supp(y)\subseteq S_C
-    b_eq = np.zeros(neg_S_C+1)
+    b_eq = np.zeros(len(neg_S_C)+1)
     b_eq[-1] = 1
-    A_eq = np.zeros((neg_S_C+1, action_num_y+1))
+    A_eq = np.zeros((len(neg_S_C)+1, action_num_y+1))
     A_eq[-1, :-1] = 1
-    A_eq[np.arange(neg_S_C), neg_S_C] = 1
+    if len(neg_S_C) > 0:
+        A_eq[np.arange(len(neg_S_C)), neg_S_C] = 1
     # constrain eps-WSNE
     A_le = np.zeros((action_num_x, len(S_R), action_num_y))
     A_le -= R[S_R]
-    np.swapaxes(A_le, 0, 1)
+    A_le = np.swapaxes(A_le, 0, 1)
     A_le += R
     A_le = np.reshape(A_le, (-1, action_num_y))
-    A_le = np.insert(A_le, action_num_y, -1)
+    A_le = np.insert(A_le, action_num_y, -1, axis=1)
     b_le = np.zeros(len(A_le))
     c = np.zeros(action_num_y+1)
     c[-1] = 1
@@ -41,19 +41,20 @@ def BestC(S_C, neg_S_R, C):
     # find the best eps-WSNE of x
     action_num_x, action_num_y = C.shape
     # supp(x)\subseteq S_R
-    b_eq = np.zeros(neg_S_R+1)
+    b_eq = np.zeros(len(neg_S_R)+1)
     b_eq[-1] = 1
-    A_eq = np.zeros((neg_S_R+1, action_num_x+1))
+    A_eq = np.zeros((len(neg_S_R)+1, action_num_x+1))
     A_eq[-1, :-1] = 1
-    A_eq[np.arange(neg_S_R), neg_S_R] = 1
+    if len(neg_S_R) > 0:
+        A_eq[np.arange(len(neg_S_R)), neg_S_R] = 1
     # constrain eps-WSNE
     A_le = np.zeros((action_num_y, len(S_C), action_num_x))
     CT = np.transpose(C)
     A_le -= CT[S_C]
-    np.swapaxes(A_le, 0, 1)
+    A_le = np.swapaxes(A_le, 0, 1)
     A_le += CT
     A_le = np.reshape(A_le, (-1, action_num_x))
-    A_le = np.insert(A_le, action_num_x, -1)
+    A_le = np.insert(A_le, action_num_x, -1, axis=1)
     b_le = np.zeros(len(A_le))
     c = np.zeros(action_num_x+1)
     c[-1] = 1
@@ -69,8 +70,8 @@ def BestPure(R, C):
     action_num_x, action_num_y = R.shape
     ret_x, ret_y = None, None
     epsWS = 1.0
-    for i in range(len(action_num_x)):
-        for j in range(len(action_num_y)):
+    for i in range(action_num_x):
+        for j in range(action_num_y):
             new_regret = regret(i, j)
             if new_regret <= epsWS:
                 ret_x = np.zeros(action_num_x)
