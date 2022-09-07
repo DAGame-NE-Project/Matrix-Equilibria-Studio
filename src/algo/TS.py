@@ -11,8 +11,8 @@ adjust_methods = {}
 TOTAL_FLOAT_VALUE_EPS = 1e-12
 
 
-# run ts algorithm
-def solve(R, C, delta, adjust_method, line_search_method, n_iter=None, init_x=None, init_y=None, record_points=False):
+# run TS algorithm
+def solve(R, C, adjust_method, line_search_method, delta=0.1, n_iter=None, init_x=None, init_y=None, record_points=False):
     rec_x = []
     rec_y = []
     rec_a = []
@@ -87,7 +87,8 @@ def solve(R, C, delta, adjust_method, line_search_method, n_iter=None, init_x=No
             "sols": sols,
             "V": sols['primary'].fun,
         }
-        x, y = line_search_method(x, y, extra, eps_adjust_args)
+        x, y = line_search_methods[line_search_method](
+            x, y, extra, eps_adjust_args)
         extra.update(x, y)
         if record_points:
             rec_x.append(x.flatten().tolist())
@@ -101,7 +102,7 @@ def solve(R, C, delta, adjust_method, line_search_method, n_iter=None, init_x=No
         if n_iter is not None and step >= n_iter:
             break
     # last adjust
-    res = adjust_method(R, C, x, y, extra)  # a dict
+    res = adjust_methods[adjust_method](R, C, x, y, extra)  # a dict
     if record_points:
         res['record'] = {
             "x": rec_x,
@@ -113,7 +114,7 @@ def solve(R, C, delta, adjust_method, line_search_method, n_iter=None, init_x=No
             "fC": rec_fC,
             "f": rec_f,
         }
-    return res
+    return res["x"], res["y"]
 
 
 ########################### line search #############################
@@ -223,9 +224,9 @@ def linear_adjust(R, C, x, y, extra):
 
 def dfm_adjust(R, C, x, y, extra):
     def calculate_lamb_mu(x, y, extra):
-        lamb = (extra.w - x) @ extra.R @ extra.z
-        mu = extra.w @ extra.C @ (extra.z - y)
-        return (lamb, mu)
+        lamb = (extra.w - x).transpose() @ extra.R @ extra.z
+        mu = extra.w.transpose() @ extra.C @ (extra.z - y)
+        return (lamb[0, 0], mu[0, 0])
     lamb, mu = calculate_lamb_mu(x, y, extra)
     x_sol, y_sol = x, y
     f_sol = extra.f
@@ -239,12 +240,14 @@ def dfm_adjust(R, C, x, y, extra):
     # adjust
     elif 1/2 < lamb <= 2/3 < mu:
         haty = (y+extra.z)/2
-        hatw = np.zeros_like(x)
-        supphatw = get_best_response(R@haty, best_func=np.max)['index'][0]
-        hatw[supphatw] = 1.0
-        t_r = hatw @ R @ haty - extra.w @ R @ haty
-        v_r = extra.w @ R @ y - hatw @ R @ y
-        hatmu = hatw @ C @ extra.z - hatw @ C @ y
+        hatw = np.zeros_like(x).reshape(-1, 1)
+        supphatw = get_best_response(R @ haty, best_func=np.max)['index'][0]
+        hatw[supphatw, 0] = 1.0
+        t_r = (hatw.transpose() @ R @ haty -
+               extra.w.transpose() @ R @ haty)[0, 0]
+        v_r = (extra.w.transpose() @ R @ y - hatw.transpose() @ R @ y)[0, 0]
+        hatmu = (hatw.transpose() @ C @ extra.z -
+                 hatw.transpose() @ C @ y)[0, 0]
         xt, yt = x, y
         if v_r+t_r >= (lamb-mu)/2 and hatmu >= mu-v_r-t_r:
             p = 1-(mu-lamb)/(2*(v_r+t_r))
@@ -254,7 +257,7 @@ def dfm_adjust(R, C, x, y, extra):
             q = (1-mu/2-t_r)/(1+mu/2-lamb-t_r)
             xt = extra.w
             yt = (1-q)*haty + q*extra.z
-        f_t = calculate_f_value(R, C, xt, yt)
+        f_t = calculate_f_value(R, C, xt, yt)['f']
         if f_t < f_sol:
             x_sol, y_sol = xt, yt
             f_sol = f_t
@@ -263,11 +266,13 @@ def dfm_adjust(R, C, x, y, extra):
         hatx = (x+extra.w)/2
         hatz = np.zeros_like(y)
         supphatx = get_best_response(
-            extra.CT@hatx, best_func=np.max)['index'][0]
+            extra.CT @ hatx, best_func=np.max)['index'][0]
         hatx[supphatx] = 1.0
-        t_c = hatx @ R @ hatz-hatx @ R @ z
-        v_c = x @ C @ extra.z-x @ C @ hatz
-        hatlamb = extra.w @ R @ hatz - x @ R @ hatz
+        t_c = (hatx.transpose() @ R @ hatz -
+               hatx.transpose() @ R @ extra.z)[0, 0]
+        v_c = (x.transpose() @ C @ extra.z-x.transpose() @ C @ hatz)[0, 0]
+        hatlamb = (extra.w.transpose() @ R @ hatz -
+                   x.transpose() @ R @ hatz)[0, 0]
         xt, yt = x, y
         if v_c+t_c >= (lamb-mu)/2 and hatlamb >= lamb-v_c-t_c:
             xt = extra.w
@@ -276,7 +281,7 @@ def dfm_adjust(R, C, x, y, extra):
             q = (1-lamb/2-t_c)/(1+lamb/2-mu-t_c)
             xt = (1-q)*hatx+q*extra.w
             yt = extra.z
-        f_t = calculate_f_value(R, C, xt, yt)
+        f_t = calculate_f_value(R, C, xt, yt)['f']
         if f_t < f_sol:
             x_sol, y_sol = xt, yt
             f_sol = f_t
@@ -586,5 +591,21 @@ def check_solution(R, C, x, y, w, z, rho, EPS=1e-10):
         "ts": ts_adjust(R, C, x, y, extra)['approximation'],
         "linear": linear_adjust(R, C, x, y, extra)['approximation'],
     }
-    
+
     return True, res_value
+
+
+if __name__ == '__main__':
+    # test tight instance of DFM
+    eps = 1e-6
+    R = np.array([[0, 0, 0], [1/3, 1, 1], [1/3, 2/3-eps/2, 2/3-eps/2]])
+    C = np.array([[0, 1/3-eps, 1/3-eps], [0, 1, 2/3+eps], [0, 1, 2/3+eps]])
+    init_x = np.array([1.0, 0, 0])
+    init_y = np.array([1.0, 0, 0])
+    x, y = solve(R, C, adjust_method='DFM',
+                 line_search_method='adapted', init_x=init_x, init_y=init_y)
+    print(calculate_f_value(R, C, x, y))
+    R, C = C.transpose(), R.transpose()
+    x, y = solve(R, C, adjust_method='DFM',
+                 line_search_method='adapted', init_x=init_x, init_y=init_y)
+    print(calculate_f_value(R, C, x, y))
