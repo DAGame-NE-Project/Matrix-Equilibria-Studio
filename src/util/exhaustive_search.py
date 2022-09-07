@@ -39,7 +39,7 @@ def eps_comp(x1, y1, x2, y2, R, C):
     return regret(x1, y1) < regret(x2, y2)
 
 
-def epsWS_comp(x1, y1, x2, y2, R, C, ):
+def epsWS_comp(x1, y1, x2, y2, R, C):
     # compare eps-WSNE of (x1,y1) and (x2,y2)
     NON_ZERO = 1e-10
 
