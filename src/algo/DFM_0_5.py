@@ -20,7 +20,8 @@ def solve(R, C, delta=0.1, NON_ZERO=1e-10):
         b_eq[-1] = 1
         A_eq = np.zeros((len(nonsupp_x_star)+1, action_num_x))
         A_eq[-1] = 1
-        A_eq[np.arange(len(nonsupp_x_star)), nonsupp_x_star] = 1
+        if len(nonsupp_x_star) > 0:
+            A_eq[np.arange(len(nonsupp_x_star)), nonsupp_x_star] = 1
         A_le = np.transpose(C)
         b_le = np.ones(action_num_y)*0.5
         c = np.zeros(action_num_x)
@@ -40,7 +41,8 @@ def solve(R, C, delta=0.1, NON_ZERO=1e-10):
         b_eq[-1] = 1
         A_eq = np.zeros((len(nonsupp_y_hat)+1, action_num_y))
         A_eq[-1] = 1
-        A_eq[np.arange(len(nonsupp_y_hat)), nonsupp_y_hat] = 1
+        if len(nonsupp_y_hat) > 0:
+            A_eq[np.arange(len(nonsupp_y_hat)), nonsupp_y_hat] = 1
         A_le = R
         b_le = np.ones(action_num_x)*0.5
         c = np.zeros(action_num_y)
@@ -49,3 +51,16 @@ def solve(R, C, delta=0.1, NON_ZERO=1e-10):
             return x_hat, lp_sol.x
         # do an exhaustive search
         return exhaustive_search(R, C, kappa, 'epsWSNE')
+
+
+if __name__ == '__main__':
+    # test solver
+    # extended matching pennies
+    R = np.array([[0, 1, 0], [1, 0, 1]])
+    C = 1 - R
+    print(solve(R, C))
+
+    # paper-scissors-rock
+    R = np.array([[0.5, 1, 0], [0, 0.5, 1], [1, 0, 0.5]])
+    C = 1 - R
+    print(solve(R, C))
