@@ -31,7 +31,7 @@ eggs/
 lib/
 lib64/
 parts/
-results/
+result*/
 sdist/
 var/
 wheels/

@@ -16,12 +16,13 @@ class Player(object):
         for player_id in range(players):
             ret.append(np.zeros(actions[players[player_id]]))
 
-        max_row_util_idx = np.unravel_index(np.argmax(utility[0]), actions)
-        col_best_to_row = np.argmax(utility[1][max_row_util_idx[0]])
+        row_random_pick = np.random.randint(actions[0])
+        col_best_resp = np.argmax(utility[1][row_random_pick])
+        row_best_resp = np.argmax(utility[0].T[col_best_resp])
 
-        ret[0][max_row_util_idx[0]] += 1.0
-        ret[1][max_row_util_idx[1]] += 0.5
-        ret[1][col_best_to_row] += 0.5
+        ret[0][row_random_pick] += 1.0
+        ret[1][col_best_resp] += 0.5
+        ret[1][row_best_resp] += 0.5
 
 
         info = {

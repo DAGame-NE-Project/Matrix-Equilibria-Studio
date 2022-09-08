@@ -62,6 +62,14 @@ For equilibrium solvers, we divide them into two different kinds, one-shot solve
 3. Regret Matching. (DONE)
 4. Multiplicative Weights Update. (DONE)
 
+### Well-supported Nash Equilibrium (WSNE)
+
+1. KS-2/3
+2. CFM-1/2 (symmetric games only)
+3. FGSS-0.6607
+4. CDFFJS-0.6528
+5. DFM-1/2
+
 ### Evolutionary (ESS?)
 
 1. Replicator Dynamics.
