@@ -1,17 +1,18 @@
+from .iterative_solver import IterativeSolver
 import numpy as np
 
 
-class Player(object):
+class Player(IterativeSolver):
 
     def __init__(self, args):
 
-        self.args = args
+        super(Player, self).__init__(args)
         if hasattr(args, 'epsilon'):
             self.epsilon = float(args.epsilon)
         else:
             self.epsilon = 1e-20
 
-    def solve(self, game, info):
+    def step(self, game, info):
 
         actions = game.getActionSpace()
         players = game.players
