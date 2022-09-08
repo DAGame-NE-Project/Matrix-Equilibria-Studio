@@ -1,4 +1,7 @@
-from .simpleRunner import SimpleRunner
+from .basic_runner import BasicRunner
+from .direct_runner import DirectRunner
+from .iterative_runner import IterativeRunner
 
 Runner = dict()
-Runner["simplerunner"] = SimpleRunner
+Runner["iterative"] = IterativeRunner
+Runner["direct"] = DirectRunner

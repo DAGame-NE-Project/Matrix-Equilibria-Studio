@@ -1,7 +1,9 @@
+from .iterative_solver import IterativeSolver
+from .direct_solver import DirectSolver
 from .Hedge import Hedge
-from .FictitiousPlay import Player as FictitiousPlay
+from .fictitious_play import Player as FictitiousPlay
 from .MW import MW as MWU
-from .RandomPlay import RandomPlay
+from .random_play import RandomPlay
 from .RM import Player as RM
 Solver = dict()
 

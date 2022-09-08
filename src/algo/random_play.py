@@ -1,11 +1,12 @@
+from .IterativeSolver import IterativeSolver
 import random
 
-class RandomPlay(object):
+class RandomPlay(IterativeSolver):
 
     def __init__(self, args):
-        self.args = args
+        super(RandomPlay, self).__init__(args)
 
-    def solve(self, game, info):
+    def step(self, game, info):
         actions = game.getActionSpace()
         players = game.players
         ret = [np.zeros(actions[player_id]) for player_id in range(players)]

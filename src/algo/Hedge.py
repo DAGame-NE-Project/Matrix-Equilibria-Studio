@@ -1,17 +1,18 @@
+from .iterative_solver import IterativeSolver
 import numpy as np
 
 
-class Hedge(object):
+class Hedge(IterativeSolver):
 
     def __init__(self, args):
 
-        self.args = args
+        super(Hedge, self).__init__(args)
         if hasattr(args, 'epsilon'):
             self.epsilon = float(args.epsilon)
         else:
             self.epsilon = 0.003 # sqrt(log(players)/T)
 
-    def solve(self, game, info):
+    def step(self, game, info):
 
         actions = game.getActionSpace()
         players = game.players

@@ -22,9 +22,9 @@ def _epsNE_with_utility(players, actions, strategies, utility, NON_ZERO=1e-10):
     ret.append((max(epsWS), epsWS.copy()))
     return ret
 
-# parse utility matrix from interface game.play
+# parse utility matrix from interface game.play with DFS
 
-def dfs_parse_utility(players, actions, play, cur_action, utility, player_id, samples):
+def _dfs_parse_utility(players, actions, play, cur_action, utility, player_id, samples):
 
     if player_id == players:
         tmp = np.array([0.] * players)
@@ -35,17 +35,25 @@ def dfs_parse_utility(players, actions, play, cur_action, utility, player_id, sa
 
     for action_id in range(actions[player_id]):
         cur_action[player_id] = action_id
-        dfs_parse_utility(players, actions, play, cur_action, utility, player_id + 1, samples)
+        _dfs_parse_utility(players, actions, play, cur_action, utility, player_id + 1, samples)
+
+# parse utility matrix from game
+
+def sample_utility(game, samples = 1):
+    utility = []
+    players = game.players
+    actions = game.getActionSpace()
+    cur_action = [0] * players
+    _dfs_parse_utility(players, actions, game.play, cur_action, utility, 0, samples)
+    utility = np.array(utility).reshape(tuple(actions) + (players,))
+    return utility
 
 # return maximal eps and eps for each player with game utility matrix
 
 def epsNE_with_sample(game, strategies, samples = 1):
 
-    utility = []
     players = game.players
     actions = game.getActionSpace()
-    cur_action = [0] * players
-    dfs_parse_utility(players, actions, game.play, cur_action, utility, 0, samples)
-    utility = np.array(utility).reshape(tuple(actions) + (players,))
+    utility = parse_utility(game, samples)
     return _epsNE_with_utility(players, actions, strategies, utility)
 
