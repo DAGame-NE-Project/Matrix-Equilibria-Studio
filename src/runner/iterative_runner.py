@@ -9,7 +9,7 @@ class IterativeRunner(BasicRunner):
     def __init__(self, game, solver, args):
         super(IterativeRunner, self).__init__(game, solver, args)
         self.reset_full()
-        assert self.solver is IterativeSolver, "The IterativeRunner should be used for iterative solvers!!!"
+        assert isinstance(self.solver, IterativeSolver), "The IterativeRunner should be used for iterative solvers!!!"
 
     def run(self, record_info = None):
 
