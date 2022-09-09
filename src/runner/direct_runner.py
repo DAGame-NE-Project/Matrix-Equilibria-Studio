@@ -8,7 +8,7 @@ class DirectRunner(BasicRunner):
     def __init__(self, game, solver, args):
         super(DirectRunner, self).__init__(game, solver, args)
         self.reset_full()
-        assert self.solver is DirectSolver, "The DirectRunner should be used for direct solvers!!!"
+        assert isinstance(self.solver, DirectSolver), "The DirectRunner should be used for direct solvers!!!"
 
     def run(self, record_info = None):
 
@@ -18,7 +18,7 @@ class DirectRunner(BasicRunner):
         utility.transpose((len(utility.shape),) + tuple(range(1, len(utility.shape))))
         strategy = None
         info = None
-        strategy, info = self.solver.solve(game, utility)
+        strategy, info = self.solver.solve(self.game, utility)
 
         if record_info is not None:
             # record with record_info

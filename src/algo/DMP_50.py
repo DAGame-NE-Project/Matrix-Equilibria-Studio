@@ -1,7 +1,7 @@
 from .direct_solver import DirectSolver
 import numpy as np
 
-class Player(object):
+class Player(DirectSolver):
 
     def __init__(self, args):
         super(Player, self).__init__(args)
