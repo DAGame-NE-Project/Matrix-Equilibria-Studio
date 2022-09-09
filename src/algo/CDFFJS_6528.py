@@ -11,8 +11,8 @@ def cal_epsWS(R, C, xi, yi):
 
 def solve(R, C, NON_ZERO=1e-10):
     # solve zero sum games (R,-R) and (-C,C)
-    x_star, y_star, v_r = solve_zero_sum(R, -R)
-    x_hat, y_hat, v_c = solve_zero_sum(-C, C)
+    x_star, y_star, v_r = solve_zero_sum(R)
+    x_hat, y_hat, v_c = solve_zero_sum(-C)
     if v_c <= v_r:
         if v_r <= 2/3-z:
             return x_hat, y_star
@@ -105,3 +105,17 @@ def solve(R, C, NON_ZERO=1e-10):
                 y_mp[b] = (1-24*z)/(2-39*z)
                 y_mp[s] = (1-15*z)/(2-39*z)
                 return x_mp, y_mp
+
+
+if __name__ == '__main__':
+    R = np.array([[0.01, 0, 0], [0.01+0.3393, 1, 1]])
+    C = np.array([[0.01, 0.01+0.3393, 0.01+0.3393],
+                 [0, 1, 0.812815]])
+    print(solve(R, C))
+    R, C = C.transpose(), R.transpose()
+    print(solve(R, C))
+    R = np.array([[0.01, 0, 0], [0.01+0.3393, 1, 1],
+                 [0.01+0.3393, 0.582523, 0.582523]])
+    C = np.array([[0.01, 0.01+0.3393, 0.01+0.3393],
+                 [0, 1, 0.812815], [0, 1, 0.812815]])
+    print(solve(R, C))
