@@ -29,4 +29,4 @@ Solver['mwu'] = MWU
 Solver['rm'] = RM
 Solver['fp'] = FictitiousPlay
 Solver['random'] = RandomPlay
-Solver['rp'] = ReplicatorDynamics
+Solver['rd'] = ReplicatorDynamics
