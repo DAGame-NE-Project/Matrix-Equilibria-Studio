@@ -21,7 +21,7 @@ class Player(DirectSolver):
 
         actions = game.getActionSpace()
         players = game.players
-        assert players == 2, "CDFFJS_38 only works for 2-player games!"
+        assert players == 2, "DFM_50 only works for 2-player games!"
         ret = []
 
         for player_id in range(players):

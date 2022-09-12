@@ -12,12 +12,11 @@ class Player(DirectSolver):
         else:
             self.NON_ZERO = 1e-10
 
-
     def solve(self, game, utility):
 
         actions = game.getActionSpace()
         players = game.players
-        assert players == 2, "CDFFJS_38 only works for 2-player games!"
+        assert players == 2, "FGSS_6605 only works for 2-player games!"
         ret = []
 
         for player_id in range(players):
@@ -29,8 +28,15 @@ class Player(DirectSolver):
         strategy_pairs[0], epsWSs[0] = self.__BestPure(R, C)
         strategy_pairs[1], epsWSs[1] = self.__Best2times2(R, C)
         ret_idx = np.argmin(epsWSs, keepdims=True)[0]
-        return strategy_pairs[ret_idx]
-
+        ret[0], ret[1] = strategy_pairs[ret_idx]
+        info = {
+            'solver': 'FGSS_6605',
+            'overall_policy': [ret[player_id].copy() for player_id in range(players)],
+        }
+        return ret, info
+    
+    def reset(self):
+        pass
 
     def __BestR(self, S_R, neg_S_C, R):
         # find the best eps-WSNE of y
@@ -55,7 +61,6 @@ class Player(DirectSolver):
         lp_sol = solve_lp(c=c, A_le=A_le, b_le=b_le, A_eq=A_eq, b_eq=b_eq)
         if lp_sol.success:
             return lp_sol.x[:-1], lp_sol.x[-1]
-
 
     def __BestC(self, S_C, neg_S_R, C):
         # find the best eps-WSNE of x
@@ -82,7 +87,6 @@ class Player(DirectSolver):
         if lp_sol.success:
             return lp_sol.x[:-1], lp_sol.x[-1]
 
-
     def __BestPure(self, R, C):
         # find the best eps-WSNE of pure strategy pairs
         def regret(i, j): return max(
@@ -100,7 +104,6 @@ class Player(DirectSolver):
                     ret_y[j] = 1.0
                     epsWS = new_regret
         return (ret_x, ret_y), epsWS
-
 
     def __Best2times2(self, R, C):
         # find the best eps-WSNE of 2x2 subgames
@@ -124,7 +127,6 @@ class Player(DirectSolver):
                     epsWS = new_regret
         return (ret_x, ret_y), epsWS
 
-
     def __BestZeroSum(self, R, C):
         # find the best eps-WSNE of shifting probability of NE of (D,-D)
         action_num_x, action_num_y = R.shape
@@ -139,7 +141,6 @@ class Player(DirectSolver):
         ret_y, regret_y = self.__BestR(S_R, neg_S_C, R)
         epsWS = max(regret_x, regret_y)
         return (ret_x, ret_y), epsWS
-
 
     def test(self):
         # test BestR
