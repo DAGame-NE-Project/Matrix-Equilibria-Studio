@@ -1,5 +1,5 @@
 import numpy as np
-from algo.CDFFJS_38 import *
+from algo.CDFFJS_6528 import *
 
 if __name__ == '__main__':
     from env import matrixgame
@@ -12,7 +12,7 @@ if __name__ == '__main__':
         args.actionspace = [R.shape[0], R.shape[1]]
         gen = RandomMatrixGenerator(args)
         game = matrixgame.MatrixGame(gen)
-        p = Player(args=None)
+        p = Player(args=argparse.Namespace())
         print(p.solve(game, [R, C]))
 
     R = np.array([[0.01, 0, 0], [0.01+0.3393, 1, 1]])

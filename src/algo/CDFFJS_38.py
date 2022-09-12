@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from util.lp import solve_lp, solve_zero_sum
+from util.lp import solve_zero_sum
 from .direct_solver import DirectSolver
 
 
@@ -15,7 +15,7 @@ class Player(DirectSolver):
 
         actions = game.getActionSpace()
         players = game.players
-        assert players == 2, "DMP_50 only works for 2-player games!"
+        assert players == 2, "CDFFJS_38 only works for 2-player games!"
         ret = []
 
         for player_id in range(players):
