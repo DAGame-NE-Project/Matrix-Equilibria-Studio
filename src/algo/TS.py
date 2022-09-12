@@ -1,6 +1,8 @@
 from util.lp import check_lp, solve_lp
 import numpy as np
 import scipy as sp
+from .direct_solver import DirectSolver
+
 
 # 'constant', 'adapted'
 line_search_methods = {}
@@ -9,6 +11,43 @@ line_search_methods = {}
 adjust_methods = {}
 
 TOTAL_FLOAT_VALUE_EPS = 1e-12
+
+
+class Player(DirectSolver):
+    def __init__(self, args):
+        super(Player, self).__init__(args)
+        self.line_search_method = args.line_search_method if hasattr(
+            args, 'line_search_method') else 'adapted'
+        self.adjust_method = args.adjust_method if hasattr(
+            args, 'adjust_method') else 'DFM'
+        self.delta = args.delta if hasattr(args, 'delta') else 0.1
+        self.n_iter = args.n_iter if hasattr(args, 'n_iter') else None
+        self.init_x = args.init_x if hasattr(args, 'init_x') else None
+        self.init_y = args.init_y if hasattr(args, 'init_y') else None
+
+    def solve(self, game, utility):
+        actions = game.getActionSpace()
+        players = game.players
+        assert players == 2, "TS only works for 2-player games!"
+        ret = []
+
+        for player_id in range(players):
+            ret.append(np.zeros(actions[player_id]))
+
+        R, C = utility[0], utility[1]
+        res = solve(R=R, C=C, adjust_method=self.adjust_method, line_search_method=self.line_search_method,
+                    delta=self.delta, n_iter=self.n_iter, init_x=self.init_x, init_y=self.init_y)
+        x_s, y_s, ret[0], ret[1] = res
+        info = {
+            'solver': "TS",
+            'adjust_method': self.adjust_method,
+            'overall_policy': [ret[player_id].copy() for player_id in range(players)],
+            'strategy_before_adjust': [x_s.copy(), y_s.copy()],
+        }
+        return ret, info
+
+    def reset(self):
+        pass
 
 
 # run TS algorithm
@@ -102,6 +141,7 @@ def solve(R, C, adjust_method, line_search_method, delta=0.1, n_iter=None, init_
         if n_iter is not None and step >= n_iter:
             break
     # last adjust
+    x_s, y_s = x.flatten(), y.flatten()
     res = adjust_methods[adjust_method](R, C, x, y, extra)  # a dict
     if record_points:
         res['record'] = {
@@ -114,7 +154,7 @@ def solve(R, C, adjust_method, line_search_method, delta=0.1, n_iter=None, init_
             "fC": rec_fC,
             "f": rec_f,
         }
-    return res["x"], res["y"]
+    return x_s, y_s, res['x'].flatten(), res['y'].flatten()
 
 
 ########################### line search #############################
@@ -597,15 +637,26 @@ def check_solution(R, C, x, y, w, z, rho, EPS=1e-10):
 
 if __name__ == '__main__':
     # test tight instance of DFM
+    from env import matrixgame
+    from env.gen.randommatrixgenerator import RandomMatrixGenerator
+    import argparse
+    args = argparse.Namespace()
     eps = 1e-6
     R = np.array([[0, 0, 0], [1/3, 1, 1], [1/3, 2/3-eps/2, 2/3-eps/2]])
     C = np.array([[0, 1/3-eps, 1/3-eps], [0, 1, 2/3+eps], [0, 1, 2/3+eps]])
+    args.players = 2
+    args.actionspace = [R.shape[0], R.shape[1]]
+    gen = RandomMatrixGenerator(args)
+    game = matrixgame.MatrixGame(gen)
     init_x = np.array([1.0, 0, 0])
     init_y = np.array([1.0, 0, 0])
-    x, y = solve(R, C, adjust_method='DFM',
-                 line_search_method='adapted', init_x=init_x, init_y=init_y)
-    print(calculate_f_value(R, C, x, y))
+    args.init_x = init_x
+    args.init_y = init_y
+    p = Player(args=args)
+    x, y = p.solve(game, [R, C])
+    print(x, y)
+    print(calculate_f_value(R, C, x[0], x[1]))
     R, C = C.transpose(), R.transpose()
-    x, y = solve(R, C, adjust_method='DFM',
-                 line_search_method='adapted', init_x=init_x, init_y=init_y)
-    print(calculate_f_value(R, C, x, y))
+    x, y = p.solve(game, [R, C])
+    print(x, y)
+    print(calculate_f_value(R, C, x[0], x[1]))
