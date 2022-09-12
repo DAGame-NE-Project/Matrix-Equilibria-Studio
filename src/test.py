@@ -1,7 +1,8 @@
 import numpy as np
-from algo.CDFFJS_6528 import *
+from algo.DFM_50 import *
 
 if __name__ == '__main__':
+    # test solver
     from env import matrixgame
     from env.gen.randommatrixgenerator import RandomMatrixGenerator
     import argparse
@@ -14,15 +15,12 @@ if __name__ == '__main__':
         game = matrixgame.MatrixGame(gen)
         p = Player(args=argparse.Namespace())
         print(p.solve(game, [R, C]))
+    # extended matching pennies
+    R = np.array([[0, 1, 0], [1, 0, 1]])
+    C = 1 - R
+    test_RC(R, C)
 
-    R = np.array([[0.01, 0, 0], [0.01+0.3393, 1, 1]])
-    C = np.array([[0.01, 0.01+0.3393, 0.01+0.3393],
-                 [0, 1, 0.812815]])
-    test_RC(R, C)
-    R, C = C.transpose(), R.transpose()
-    test_RC(R, C)
-    R = np.array([[0.01, 0, 0], [0.01+0.3393, 1, 1],
-                 [0.01+0.3393, 0.582523, 0.582523]])
-    C = np.array([[0.01, 0.01+0.3393, 0.01+0.3393],
-                 [0, 1, 0.812815], [0, 1, 0.812815]])
+    # paper-scissors-rock
+    R = np.array([[0.5, 1, 0], [0, 0.5, 1], [1, 0, 0.5]])
+    C = 1 - R
     test_RC(R, C)
