@@ -51,10 +51,11 @@ if __name__ == "__main__":
     file_prefix = args.solver
     if args.type is not None:
         file_prefix = file_prefix +  "_" + args.type
+    args.dir_name = file_prefix
     for test_num in range(args.totaltestnum):
-        file_name = file_prefix + str(test_num)
+        file_name = file_prefix + "_" + str(test_num)
         record_info = {
-            'file_name': file_prefix + str(test_num)
+            'file_name': file_name
             }
         print(file_name, "START!!!({}/{})".format(test_num + 1, args.totaltestnum))
         run_episode(args, record_info = record_info)

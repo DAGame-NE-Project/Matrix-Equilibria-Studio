@@ -10,16 +10,16 @@ class Player(DirectSolver):
 
         actions = game.getActionSpace()
         players = game.players
-        assert players == 2, "KPS_75 is only works for 2-player games!"
+        assert players == 2, "KPS_75 only works for 2-player games!"
         ret = []
 
         for player_id in range(players):
-            ret.append(np.zeros(actions[players[player_id]]))
+            ret.append(np.zeros(actions[player_id]))
 
         for player_id in range(players):
             max_util_idx = np.unravel_index(np.argmax(utility[player_id]), actions)
             for enum_id in range(players):
-                ret[enum_id][max_util_idx] += 1.0
+                ret[enum_id][max_util_idx[enum_id]] += 1.0
 
         for player_id in range(players):
             ret[player_id] /= players

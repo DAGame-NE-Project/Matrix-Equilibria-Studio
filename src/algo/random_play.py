@@ -1,4 +1,4 @@
-from .IterativeSolver import IterativeSolver
+from .iterative_solver import IterativeSolver
 import random
 
 class RandomPlay(IterativeSolver):

@@ -15,15 +15,15 @@ class BasicRunner(object):
     def run(self, record_info = None):
         pass
 
-    def write_to_file(self, output_dict):
+    def write_to_file(self, file_name, output_dict):
 
         RESULT_PATH = self.args.resultpath
         if not os.path.exists(RESULT_PATH):
             os.mkdir(RESULT_PATH)
-        SUBDIR_PATH = os.path.join(RESULT_PATH, args.solver)
+        SUBDIR_PATH = os.path.join(RESULT_PATH, self.args.dir_name)
         if not os.path.exists(SUBDIR_PATH):
             os.mkdir(SUBDIR_PATH)
-        with open(os.path.join(SUBDIR_PATH, record_info['file_name'] + ".json"), 'w') as fp:
+        with open(os.path.join(SUBDIR_PATH, file_name + ".json"), 'w') as fp:
             json.dump(output_dict, fp, separators=(",\n",":\n"))
 
     def reset_game(self):

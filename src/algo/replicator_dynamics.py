@@ -1,26 +1,53 @@
+from .iterative_solver import IterativeSolver
+from util import sample_utility
+
+import nashpy as nash
 import numpy as np
-import numpy.typing as npt
 
-# from scipy.integrate import solve_ivp (will change program to use solve_ivp later)
-from scipy.integrate import odeint
+# Solve bi-matrix game via NashPy's asymmetric-replicator-dynamics method.
 
+class ReplicatorDynamics(IterativeSolver):
 
-def get_derivative_of_fitness(x: npt.NDArray, t: float, A: npt.NDArray) -> npt.NDArray:
-    f = np.dot(A, x)
-    phi = np.dot(f, x)
-    return x * (f - phi)
+    def __init__(self, args):
+        super(ReplicatorDynamics, self).__init__(args)
+        self.reset()
 
+    def step(self, game, info):
 
-def replicator_dynamics(
-        A: npt.NDArray, y0: npt.NDArray = None, timepoints: npt.NDArray = None
-) -> npt.NDArray:
+        actions = game.getActionSpace()
+        players = game.players
+        assert players == 2, "ReplicatorDynamics now only works for 2-player games!"
+        if self.tmp_game is None or self.tmp_game is not game:
+            self.tmp_game = game
+            utility = sample_utility(game, 1)
+            utility = utility.transpose((len(utility.shape) - 1, ) + tuple(range(0, len(utility.shape) - 1)))
+            self.nashpy_game = nash.Game(utility[0], utility[1])
+        if info is None or info['solver'] != "ReplicatorDynamics":
+            info = {
+                'solver': "ReplicatorDynamics",
+                'agents_population': [[1.0 / actions[player_id] for action_id in range(actions[player_id])] for player_id in range(players)],
+                'overall_policy': [[0.0 for action_id in range(actions[player_id])] for player_id in range(players)],
+            }
 
-    if timepoints is None:
-        timepoints = np.linspace(0, 10, 1000)
+        ret = []
+        tmp_ret = tuple()
+        for player_id in range(players):
+            policy = np.array(info['agents_population'][player_id])
+            policy = policy / np.sum(policy)
+            ret.append(policy)
+            tmp_ret = tmp_ret + tuple([int(np.random.choice(np.array(range(actions[player_id])), p = policy))])
 
-    if y0 is None:
-        number_of_strategies = len(A)
-        y0 = np.ones(number_of_strategies) / number_of_strategies
+        self._update_info(game, tmp_ret, ret, info)
 
-    xs = odeint(func=get_derivative_of_fitness, y0=y0, t=timepoints, args=(A,))
-    return xs
+        for player_id in range(players):
+            info['overall_policy'][player_id] += ret[player_id]
+
+        return ret, tmp_ret, info
+
+    def reset(self):
+        self.tmp_game = None
+        self.nashpy_game = None
+
+    def _update_info(self, game, ret, policy, info):
+        xs, ys = self.nashpy_game.asymmetric_replicator_dynamics(x0=info['agents_population'][0], y0=info['agents_population'][1], timepoints=np.array([0,1]))
+        info['agents_population'] = [xs[1], ys[1]]

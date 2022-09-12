@@ -10,19 +10,19 @@ class Player(DirectSolver):
 
         actions = game.getActionSpace()
         players = game.players
-        assert players == 2, "DMP_50 is only works for 2-player games!"
+        assert players == 2, "DMP_50 only works for 2-player games!"
         ret = []
 
         for player_id in range(players):
-            ret.append(np.zeros(actions[players[player_id]]))
+            ret.append(np.zeros(actions[player_id]))
 
         row_random_pick = np.random.randint(actions[0])
         col_best_resp = np.argmax(utility[1][row_random_pick])
         row_best_resp = np.argmax(utility[0].T[col_best_resp])
 
-        ret[0][row_random_pick] += 1.0
-        ret[1][col_best_resp] += 0.5
-        ret[1][row_best_resp] += 0.5
+        ret[0][row_random_pick] += 0.5
+        ret[1][col_best_resp] += 1.0
+        ret[0][row_best_resp] += 0.5
 
 
         info = {

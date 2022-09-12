@@ -13,19 +13,19 @@ class Player(DirectSolver):
 
         actions = game.getActionSpace()
         players = game.players
-        assert players == 2, "BBM_36 is only works for 2-player games!"
+        assert players == 2, "BBM_36 only works for 2-player games!"
         ret = []
 
         x_star, y_star, _ = solve_zero_sum(utility[0] - utility[1])
         g = self._calc_incentive([x_star, y_star], utility)
         if g[0] >= g[1]:
-            ret = _solve(self, utility[0], utility[1], [x_star, y_star], g[0])
+            ret = self._solve(utility[0], utility[1], [x_star, y_star], g[0])
         else:
-            ret = _solve(self, utility[1].T, utility[0].T, [y_star, x_star], g[1])
+            ret = self._solve(utility[1].T, utility[0].T, [y_star, x_star], g[1])
             ret = [ret[1], ret[0]]
 
         info = {
-            'solver': "DMP_50",
+            'solver': "BBM_36",
             'overall_policy': [ret[player_id].copy() for player_id in range(players)],
         }
 

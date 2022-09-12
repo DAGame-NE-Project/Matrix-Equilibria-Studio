@@ -7,13 +7,13 @@ class Player(DirectSolver):
 
     def __init__(self, args):
         super(Player, self).__init__(args)
-        self.one_over_epsilon = args.one_over_epsilon if hasattr(args, 'one_over_epsilon') else 1000
+        self.one_over_epsilon = args.one_over_epsilon if hasattr(args, 'one_over_epsilon') else 2
 
     def solve(self, game, utility):
 
         actions = game.getActionSpace()
         players = game.players
-        assert players == 2, "DMP_38 is only works for 2-player games!"
+        assert players == 2, "DMP_38 only works for 2-player games!"
         ret = self._enumerate_solution(actions, utility)
 
         info = {
@@ -35,7 +35,7 @@ class Player(DirectSolver):
                     non_zero_idx += 1
                 k = tmp[non_zero_idx]
                 tmp[non_zero_idx] = 0
-                tmp[non_zero_idx] += 1
+                tmp[non_zero_idx + 1] += 1
                 tmp[0] = k - 1
                 if tmp[dims] != one_over_epsilon:
                     yield tmp[:dims].astype(float) / (one_over_epsilon - tmp[dims])
@@ -69,7 +69,7 @@ class Player(DirectSolver):
             b_ge.append(np.array([vc - 3 * eps_over_two]))
 
             A_eq.append(np.concatenate([np.ones(n), np.zeros(m)], axis=0).reshape((1, n + m)))
-            A_eq.append(np.concatenate([np.ones(m), np.zeros(n)], axis=0).reshape((1, n + m)))
+            A_eq.append(np.concatenate([np.zeros(n), np.ones(m)], axis=0).reshape((1, n + m)))
             b_eq = [np.ones(2)]
 
             A_le = np.concatenate(A_le, axis=0)
@@ -81,7 +81,7 @@ class Player(DirectSolver):
 
             c = np.ones(n + m)
             sol = solve_lp(A_le = A_le, b_le = b_le, A_eq = A_eq, b_eq = b_eq, A_ge =A_ge, b_ge = b_ge, c = c)
-            return sol.x[:n].copy(), sol.x[n:].copy()
+            return sol.status, sol.x[:n].copy(), sol.x[n:].copy()
 
         eps_over_two = 0.5 / self.one_over_epsilon
         for kr in range(self.one_over_epsilon + 1):
@@ -90,10 +90,13 @@ class Player(DirectSolver):
                 vc = 1. / self.one_over_epsilon * kc
                 for alpha in generate_all_strategies(actions[0], 4 * self.one_over_epsilon ** 2):
                     for beta in generate_all_strategies(actions[1], 4 * self.one_over_epsilon ** 2):
-                        if alpha @ utility[0] @ beta >= vr - 3 * eps_over_two and
+                        if alpha @ utility[0] @ beta >= vr - 3 * eps_over_two and \
                             alpha @ utility[1] @ beta >= vc - 3 * eps_over_two:
-                                x, y = lp_solution(vr, vc, alpha, beta, eps_over_two)
-                                if max(vr, vc) * 3 >= one_over_epsilon:
+                                status, x, y = lp_solution(vr, vc, alpha, beta, eps_over_two)
+                                if status != 0:
+                                    # infeasible lp
+                                    continue
+                                if max(vr, vc) * 3 >= self.one_over_epsilon:
                                     delta = 1.5 - (0.5 * self.one_over_epsilon / max(vr, vc))
                                     return [delta * alpha + (1 - delta) * x, delta * beta + (1 - delta) * y]
                                 else:
