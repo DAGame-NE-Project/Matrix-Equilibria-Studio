@@ -133,6 +133,9 @@ class Player(DirectSolver):
         }
         return ret, info
 
+    def reset(self):
+        pass
+
 
 if __name__ == '__main__':
     from env import matrixgame
