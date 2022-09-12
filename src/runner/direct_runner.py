@@ -12,17 +12,17 @@ class DirectRunner(BasicRunner):
 
     def run(self, record_info = None):
 
-        eval_samples = self.args.eval_samples if hasattr(args, 'eval_samples') else 1
-        utility = parse_utility(self.game, eval_samples)
+        eval_samples = self.args.eval_samples if hasattr(self.args, 'eval_samples') else 1
+        utility = sample_utility(self.game, eval_samples)
         # Transpose player_id to dim 0: joint_action, player_id -> player_id, joint_action
-        utility.transpose((len(utility.shape),) + tuple(range(1, len(utility.shape))))
+        utility = utility.transpose((len(utility.shape) - 1, ) + tuple(range(0, len(utility.shape) - 1)))
         strategy = None
         info = None
         strategy, info = self.solver.solve(self.game, utility)
 
         if record_info is not None:
             # record with record_info
-            record_info['record_last'] = record_overall.get('record_last', True)
+            record_info['record_last'] = record_info.get('record_last', True)
             record_last_eps = []
             record_last_ws_eps = []
             ret = epsNE_with_sample(self.game, strategy, eval_samples)
@@ -36,7 +36,7 @@ class DirectRunner(BasicRunner):
                 output_dict['last_ws_eps'] = record_last_ws_eps
 
             # write_to_file
-            self.write_to_file(output_dict)
+            self.write_to_file(record_info['file_name'], output_dict)
 
         if record_info['record_last']:
             show_strategy("Solution", self.game.players, strategy)

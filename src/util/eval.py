@@ -54,6 +54,6 @@ def epsNE_with_sample(game, strategies, samples = 1):
 
     players = game.players
     actions = game.getActionSpace()
-    utility = parse_utility(game, samples)
+    utility = sample_utility(game, samples)
     return _epsNE_with_utility(players, actions, strategies, utility)
 

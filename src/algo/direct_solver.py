@@ -7,12 +7,12 @@ class DirectSolver(object):
     def __init__(self, args):
         self.args = args
 
-    @abstractmethod
+    @abc.abstractmethod
     def solve(self, game, utility):
         # returns (mixed strategy, info)
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def reset(self):
         pass
 

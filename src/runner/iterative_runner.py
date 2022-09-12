@@ -1,8 +1,10 @@
 from .basic_runner import BasicRunner
 
-from tqdm import tqdm
 from algo import IterativeSolver
 from util import epsNE_with_sample, show_eps, show_strategy
+
+import numpy as np
+from tqdm import tqdm
 
 class IterativeRunner(BasicRunner):
 
@@ -13,15 +15,15 @@ class IterativeRunner(BasicRunner):
 
     def run(self, record_info = None):
 
-        eval_samples = self.args.eval_samples if hasattr(args, 'eval_samples') else 1
-        time_interval = self.args.time_interval if hasattr(args, 'time_interval') else 1
+        eval_samples = self.args.eval_samples if hasattr(self.args, 'eval_samples') else 1
+        time_interval = self.args.time_interval if hasattr(self.args, 'time_interval') else 1
 
         if record_info is None:
             # no record
             self.episode(time_interval)
         else:
-            record_info['record_overall'] = record_overall.get('record_overall', True)
-            record_info['record_last'] = record_overall.get('record_last', True)
+            record_info['record_overall'] = record_info.get('record_overall', True)
+            record_info['record_last'] = record_info.get('record_last', True)
             # record with record_info
             record_avg_eps = []
             record_last_eps = []
@@ -52,7 +54,7 @@ class IterativeRunner(BasicRunner):
                 output_dict['last_ws_eps'] = record_last_ws_eps
 
             # write_to_file
-            self.write_to_file(output_dict)
+            self.write_to_file(record_info['file_name'], output_dict)
 
         # if need to calc average policy, please use 'overall_policy' counting the strategies in info
 

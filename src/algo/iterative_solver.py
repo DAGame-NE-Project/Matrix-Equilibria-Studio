@@ -7,11 +7,11 @@ class IterativeSolver(object):
     def __init__(self, args):
         self.args = args
 
-    @abstractmethod
+    @abc.abstractmethod
     def step(self, game, info):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def reset(self):
         pass
 
