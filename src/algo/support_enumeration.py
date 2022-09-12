@@ -4,6 +4,7 @@ import nashpy as nash
 
 # Solve bi-matrix game via NashPy's support-enumeration method.
 
+
 class SupportEnumeration(DirectSolver):
 
     def __init__(self, args):

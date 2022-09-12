@@ -52,8 +52,8 @@ def check_lp(x, real_sol = None, A_le = None, b_le = None, A_eq = None, b_eq = N
             return False, "ge_constrains error"
     if real_sol is None:
         real_sol = solve_lp(A_le=A_le, b_le=b_le, A_eq=A_eq, b_eq=b_eq, A_ge = A_ge, b_ge = b_ge, c = c, object_func = object_func, bounds = bounds)
-    if sol.status in (3, 4):
-        return False, "lp_status_code {}".format(sol.status)
+    if real_sol.status in (3, 4):
+        return False, "lp_status_code {}".format(real_sol.status)
     if c @ x > real_sol.fun + EPS:
         if object_func == 'max':
             c = -c
