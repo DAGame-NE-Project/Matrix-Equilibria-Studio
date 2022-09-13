@@ -17,6 +17,7 @@ class Player(DirectSolver):
         ret = []
 
         x_star, y_star, _ = solve_zero_sum(utility[0] - utility[1])
+        before = [x_star, y_star]
         g = self._calc_incentive([x_star, y_star], utility)
         if g[0] >= g[1]:
             ret = self._solve(utility[0], utility[1], [x_star, y_star], g[0])
@@ -27,6 +28,7 @@ class Player(DirectSolver):
         info = {
             'solver': "BBM_36",
             'overall_policy': [ret[player_id].copy() for player_id in range(players)],
+            'before_adjust': [before[player_id].copy() for player_id in range(players)],
         }
 
         return ret, info
