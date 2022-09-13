@@ -28,7 +28,7 @@ class Player(DirectSolver):
         info = {
             'solver': "BBM_36",
             'overall_policy': [ret[player_id].copy() for player_id in range(players)],
-            'before_adjust': [before[player_id].copy() for player_id in range(players)],
+            'strategy_before_adjust': [before[player_id].copy() for player_id in range(players)],
         }
 
         return ret, info
