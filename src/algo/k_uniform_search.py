@@ -1,4 +1,5 @@
-from tkinter.filedialog import test
+#from tkinter.filedialog import test
+
 from .direct_solver import DirectSolver
 import numpy as np
 from util.exhaustive_search import exhaustive_search

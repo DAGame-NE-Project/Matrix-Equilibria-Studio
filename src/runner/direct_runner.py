@@ -31,10 +31,10 @@ class DirectRunner(BasicRunner):
             record_last_eps.append((maxeps, eps))
             maxwseps, wseps = ret[1]
             record_last_ws_eps.append((maxwseps, wseps))
-            if 'before_adjust' in info:
+            if 'strategy_before_adjust' in info:
                 record_before_adjust_eps = []
                 record_before_adjust_ws_eps = []
-                ret = epsNE_with_sample(self.game, info['before_adjust'], eval_samples)
+                ret = epsNE_with_sample(self.game, info['strategy_before_adjust'], eval_samples)
                 maxeps, eps = ret[0]
                 record_before_adjust_eps.append((maxeps, eps))
                 maxwseps, wseps = ret[1]
@@ -50,9 +50,9 @@ class DirectRunner(BasicRunner):
             # write_to_file
             self.write_to_file(record_info['file_name'], output_dict)
 
-        if record_info['record_before_adjust'] and 'before_adjust' in info:
-            show_strategy("Before adjust", self.game.players, info['before_adjust'])
-            ret = epsNE_with_sample(self.game, info['before_adjust'], eval_samples)
+        if record_info['record_before_adjust'] and 'strategy_before_adjust' in info:
+            show_strategy("Before adjust", self.game.players, info['strategy_before_adjust'])
+            ret = epsNE_with_sample(self.game, info['strategy_before_adjust'], eval_samples)
             maxeps, eps = ret[0]
             show_eps("EPS Info", maxeps, self.game.players, eps)
             maxwseps, wseps = ret[1]
