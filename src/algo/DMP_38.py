@@ -82,6 +82,8 @@ class Player(DirectSolver):
 
             c = np.ones(n + m)
             sol = solve_lp(A_le = A_le, b_le = b_le, A_eq = A_eq, b_eq = b_eq, A_ge =A_ge, b_ge = b_ge, c = c)
+            if sol.status != 0:
+                return sol.status, None, None
             return sol.status, sol.x[:n].copy(), sol.x[n:].copy()
 
         eps_over_two = 0.5 / self.one_over_epsilon

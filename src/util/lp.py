@@ -2,7 +2,7 @@ import numpy as np
 import scipy as sp
 import scipy.optimize
 
-def solve_lp(A_le = None, b_le = None, A_eq = None, b_eq = None, A_ge = None, b_ge = None, c = None, object_func = 'min', bounds = (0, None), method = 'revised simplex'):
+def solve_lp(A_le = None, b_le = None, A_eq = None, b_eq = None, A_ge = None, b_ge = None, c = None, object_func = 'min', bounds = (0, None), method = 'highs-ds'):
     # Hint: if using scipy 1.9.0, please replace "revised simplex" by "highs-ds"
     assert (c is not None)
     assert (object_func in ['min', 'max'])
