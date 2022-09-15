@@ -1,0 +1,5 @@
+nashpy==0.0.35
+numpy==1.19.4
+PyYAML==6.0
+scipy==1.9.1
+tqdm==4.54.1
