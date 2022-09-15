@@ -1,0 +1,7 @@
+# An example for yaml file of envs
+
+# game: 'matrixgame'
+# generator: 'random'
+# players: 2
+# actionspace: [3,3]
+totaltestnum: 100

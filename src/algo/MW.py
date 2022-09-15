@@ -1,11 +1,11 @@
 from .iterative_solver import IterativeSolver
 import numpy as np
 
-class MW(object):
+class MW(IterativeSolver):
 
     def __init__(self, args):
 
-        super(MW, self),__init__(args)
+        super(MW, self).__init__(args)
         if hasattr(args, 'type'):
             assert args.type in ["linear", "exponential"]
             self.type = args.type

@@ -1,0 +1,12 @@
+solver: 'hedge' # solver name
+runner: 'iterative' # solver type / runner type
+
+epsilon: 0.003
+
+# record info
+
+record_overall: True # record overall_policy for iterative solvers
+# record_before_adjust: True # record strategy_before_adjust for direct solvers
+record_last: True # record the final strategy
+
+time_interval: 100000

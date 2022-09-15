@@ -1,0 +1,15 @@
+# An example for yaml file of algos
+
+# solver: 'fp' # solver name
+# runner: 'iterative' # solver type / runner type
+
+# record info
+
+record_overall: False # record overall_policy for iterative solvers, default False
+record_before_adjust: False # record strategy_before_adjust for direct solvers, default False
+record_last: False # record the final strategy, default False
+
+# runner params
+
+eval_samples: 1
+time_interval: 100000
