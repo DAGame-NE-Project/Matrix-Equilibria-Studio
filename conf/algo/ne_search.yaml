@@ -1,0 +1,11 @@
+solver: 'uniformsearch' # solver name
+runner: 'direct' # solver type / runner type
+
+eps: 0.1
+goal: 'epsNE'
+
+# record info
+
+# record_overall: False # record overall_policy for iterative solvers
+# record_before_adjust: True # record strategy_before_adjust for direct solvers
+record_last: True # record the final strategy

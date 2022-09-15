@@ -1,0 +1,5 @@
+game: 'matrixgame'
+generator: 'zerosum'
+players: 2
+actionspace: [3,3]
+totaltestnum: 100

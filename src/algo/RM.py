@@ -6,10 +6,10 @@ class Player(IterativeSolver):
     def __init__(self, args):
 
         super(Player, self).__init__(args)
-        if hasattr(args, 'epsilon'):
-            self.epsilon = float(args.epsilon)
+        if hasattr(args, 'NON_ZERO'):
+            self.NON_ZERO = float(args.NON_ZERO)
         else:
-            self.epsilon = 0
+            self.NON_ZERO = 0
 
     def step(self, game, info):
 
@@ -28,7 +28,7 @@ class Player(IterativeSolver):
         for player_id in range(players):
             policy = np.array(info['agents_regrets'][player_id])
             policy = np.expand_dims(policy, axis = 1).max(axis = 1, initial = 0)
-            if np.sum(policy) <= self.epsilon:
+            if np.sum(policy) <= self.NON_ZERO:
                 policy = np.ones_like(policy)
             policy = policy / np.sum(policy)
             ret.append(policy)

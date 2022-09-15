@@ -1,1 +1,1 @@
-python3 main.py --solver hedge --game matrixgame --generator random --runner iterative --player "2" --actionspace "[3,3]" -t 30
+python3 main.py --algo hedge --env random_matrix -t 1
