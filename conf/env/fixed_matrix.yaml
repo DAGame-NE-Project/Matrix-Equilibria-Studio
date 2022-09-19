@@ -1,0 +1,8 @@
+game: 'matrixgame'
+generator: 'fixed'
+players: 2
+actionspace: [3,3]
+totaltestnum: 100 # datafilename '0', '1', ..., '$totaltestnum'
+
+isfixedpath: False # whether abspath, relative to data/ when False
+datapath: 'random' # abspath #path or relapath data/$datapath
