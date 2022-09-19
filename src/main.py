@@ -9,12 +9,8 @@ from algo import Solver
 from env import Game
 from env.gen import GameGenerator
 from runner import Runner
-from util import update_args
+from util import update_args, ALGO_CONF_PATH, CONF_PATH, ENV_CONF_PATH, PROJECT_PATH
 
-PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-CONF_PATH=os.path.join(PROJECT_PATH, 'conf')
-ENV_CONF_PATH=os.path.join(CONF_PATH, 'env')
-ALGO_CONF_PATH=os.path.join(CONF_PATH, 'algo')
 
 def run_episode(args):
 
