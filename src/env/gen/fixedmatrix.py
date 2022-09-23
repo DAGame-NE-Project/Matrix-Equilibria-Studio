@@ -12,7 +12,8 @@ def FixedMatrix(args):
         data_path = os.path.join(DATA_PATH, args.datapath)
     else:
         data_path = args.datapath
-    data = np.load(os.path.join(data_path, args.file_name))
+    with open(os.path.join(data_path, args.file_name), 'rb') as f:
+        data = np.load(f)
 
     def generator():
 
