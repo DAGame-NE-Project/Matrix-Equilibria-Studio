@@ -1,4 +1,6 @@
 import numpy as np
+import os
+
 from util import DATA_PATH, PROJECT_PATH
 
 def FixedMatrix(args):

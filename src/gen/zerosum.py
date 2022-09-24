@@ -1,12 +1,12 @@
 import numpy as np
-
-from util import DATA_PATH
+import os
 
 def ZeroSumMatrixGenerator(args):
 
     actionspace = args.actionspace
     players = len(actionspace)
     assert players == 2, "Zero-sum generator is only for 2-player"
+    DATA_PATH = args.DATA_PATH
     if not os.path.exists(DATA_PATH):
         os.mkdir(DATA_PATH)
     DIR_PATH = os.path.join(DATA_PATH, args.dir)
@@ -28,11 +28,3 @@ def ZeroSumMatrixGenerator(args):
     with open(FILE_PATH, 'wb') as f:
         np.save(f, u)
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--dir", default="zerosum", help="dirname of generated matrix in data, default is `zerosum`")
-    parser.add_argument("--name", help="filename of generated matrix")
-    parser.add_argument("--actionspace", help="actionspace of generated matrix, e.g., '[2,2]'")
-    args = parser.parse_args()
-    args.actionspace = eval(args.actionspace)
-    ZeroSumMatrixGenerator(args)
