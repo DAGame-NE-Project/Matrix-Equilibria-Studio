@@ -27,23 +27,29 @@ class IterativeRunner(BasicRunner):
         record_last_eps = []
         record_avg_ws_eps = []
         record_last_ws_eps = []
+        TIME_INTERVAL=1000
+        record_t = []
         for time_stamp in tqdm(range(time_interval)):
             self.step()
-            if self.args.record_overall:
-                strategies = list(map(lambda x: np.array(x) / (time_stamp + 1), self.current_info['overall_policy']))
-                ret = epsNE_with_sample(self.game, strategies, eval_samples)
-                maxeps, eps = ret[0]
-                record_avg_eps.append((maxeps, eps))
-                maxwseps, wseps = ret[1]
-                record_avg_ws_eps.append((maxwseps, wseps))
-            if self.args.record_last:
-                strategies = self.strategy[-1]
-                ret = epsNE_with_sample(self.game, strategies, eval_samples)
-                maxeps, eps = ret[0]
-                record_last_eps.append((maxeps, eps))
-                maxwseps, wseps = ret[1]
-                record_last_ws_eps.append((maxwseps, wseps))
+            if time_stamp % TIME_INTERVAL == 0 or time_stamp == time_interval - 1:
+                record_t.append(time_stamp)
+                if self.args.record_overall:
+                    strategies = list(map(lambda x: np.array(x) / (time_stamp + 1), self.current_info['overall_policy']))
+                    ret = epsNE_with_sample(self.game, strategies, eval_samples)
+                    maxeps, eps = ret[0]
+                    record_avg_eps.append((maxeps, eps))
+                    maxwseps, wseps = ret[1]
+                    record_avg_ws_eps.append((maxwseps, wseps))
+                if self.args.record_last:
+                    strategies = self.strategy[-1]
+                    ret = epsNE_with_sample(self.game, strategies, eval_samples)
+                    maxeps, eps = ret[0]
+                    record_last_eps.append((maxeps, eps))
+                    maxwseps, wseps = ret[1]
+                    record_last_ws_eps.append((maxwseps, wseps))
         output_dict = dict({})
+        if self.args.record_overall or self.args.record_last:
+            output_dict['time_stamp']=record_t
         if self.args.record_overall:
             output_dict['avg_eps'] = record_avg_eps
             output_dict['avg_ws_eps'] = record_avg_ws_eps
