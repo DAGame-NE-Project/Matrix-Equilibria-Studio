@@ -4,6 +4,7 @@ import os
 import sys
 from tqdm import tqdm
 import yaml
+from time import time
 
 from algo import Solver
 from env import Game
@@ -68,8 +69,10 @@ if __name__ == "__main__":
         os.mkdir(args.resultpath)
 
     # test
+    t0 = time()
     for test_num in range(args.totaltestnum):
         args.file_name = str(test_num)
         print("{}_{}_{}".format(args.env, args.algo, args.file_name), "START!!!({}/{})".format(test_num + 1, args.totaltestnum))
         run_episode(args)
         print("{}_{}_{}".format(args.env, args.algo, args.file_name), "FINISH!!!({}/{})".format(test_num + 1, args.totaltestnum))
+    print(f"Total time = {time() - t0}")
