@@ -26,7 +26,10 @@ class Player(DirectSolver):
         strategy_pairs = [None for _ in range(3)]
         epsWSs = [1.0 for _ in range(3)]
         strategy_pairs[0], epsWSs[0] = self.__BestPure(R, C)
-        strategy_pairs[1], epsWSs[1] = self.__Best2times2(R, C)
+        if epsWSs[0] > self.NON_ZERO:
+            strategy_pairs[1], epsWSs[1] = self.__BestZeroSum(R, C)
+            if epsWSs[1] > self.NON_ZERO:
+                strategy_pairs[2], epsWSs[2] = self.__Best2times2(R, C)
         ret_idx = np.argmin(epsWSs, keepdims=True)[0]
         ret[0], ret[1] = strategy_pairs[ret_idx]
         info = {
@@ -34,7 +37,7 @@ class Player(DirectSolver):
             'overall_policy': [ret[player_id].copy() for player_id in range(players)],
         }
         return ret, info
-    
+
     def reset(self):
         pass
 
@@ -131,10 +134,10 @@ class Player(DirectSolver):
         # find the best eps-WSNE of shifting probability of NE of (D,-D)
         action_num_x, action_num_y = R.shape
         x, y, _ = solve_zero_sum((R-C)/2)
-        S_R = np.argwhere(x > self.NON_ZERO)
+        S_R = np.argwhere(x > self.NON_ZERO).flatten()
         neg_S_R = np.setdiff1d(
             np.arange(action_num_x), S_R, assume_unique=True)
-        S_C = np.argwhere(y > self.NON_ZERO)
+        S_C = np.argwhere(y > self.NON_ZERO).flatten()
         neg_S_C = np.setdiff1d(
             np.arange(action_num_y), S_C, assume_unique=True)
         ret_x, regret_x = self.__BestC(S_C, neg_S_R, C)
