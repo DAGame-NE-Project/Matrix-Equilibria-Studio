@@ -6,6 +6,10 @@
 *.in
 *.out
 
+# Local File
+localbash/
+data/
+
 # Numpy File
 *.npy
 

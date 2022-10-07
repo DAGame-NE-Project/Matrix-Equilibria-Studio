@@ -84,7 +84,8 @@ def solve_zero_sum(R, check_result = False, EPS = 1e-10):
     # max v_+ - v_-
     c = np.concatenate([np.zeros(n + m), np.array([1, -1])], axis = 0)
     object_func = 'max'
-    sol = solve_lp(A_le = A_le, b_le = b_le, A_eq = A_eq, b_eq = b_eq, A_ge = A_ge, b_ge = b_ge, c = c, object_func = object_func)
+    sol = solve_lp(A_le=A_le, b_le=b_le, A_eq=A_eq, b_eq=b_eq, A_ge=A_ge,
+                   b_ge=b_ge, c=c, object_func=object_func, method='highs-ipm')
     if check_result:
         check_res = check_lp(sol.x, sol, A_le = A_le, b_le = b_le, A_eq = A_eq, b_eq = b_eq, A_ge = A_ge, b_ge = b_ge, c = c, object_func = object_func, EPS = EPS)
         if not check_res[0]:

@@ -1,0 +1,15 @@
+solver: 'ts' # solver name
+runner: 'direct' # solver type / runner type
+
+line_search_method: 'adapted'
+adjust_method: 'DFM'
+delta: 0.1
+# n_iter: 100000 # max iteration step
+# init_x: # initial row-player's strategy
+# init_y: # initial col-player's strategy
+
+# record info
+
+# record_overall: False # record overall_policy for iterative solvers
+record_before_adjust: True # record strategy_before_adjust for direct solvers
+record_last: True # record the final strategy

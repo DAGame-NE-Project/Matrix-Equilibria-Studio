@@ -1,0 +1,13 @@
+solver: 'dmp_38' # solver name
+runner: 'direct' # solver type / runner type
+
+# Suppose one_over_epsilon is k,
+# time complexity is about O(k^2 * n^{8k^2} * linear_programming).
+# Be careful to change this parameter.
+one_over_epsilon: 1
+
+# record info
+
+# record_overall: False # record overall_policy for iterative solvers
+record_before_adjust: True # record strategy_before_adjust for direct solvers
+record_last: True # record the final strategy
