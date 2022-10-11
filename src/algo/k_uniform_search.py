@@ -1,4 +1,5 @@
-from tkinter.filedialog import test
+#from tkinter.filedialog import test
+
 from .direct_solver import DirectSolver
 import numpy as np
 from util.exhaustive_search import exhaustive_search
@@ -33,6 +34,7 @@ class Player(DirectSolver):
         ret[0], ret[1] = exhaustive_search(R, C, k, self.goal)
         info = {
             'solver': "k_uniform_search",
+            'goal': self.goal,
             'overall_policy': [ret[player_id].copy() for player_id in range(players)],
         }
         return ret, info

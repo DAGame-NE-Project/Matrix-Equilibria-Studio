@@ -40,7 +40,7 @@ class Player(DirectSolver):
             else:
                 # search for a strategy x_p by a linear program
                 # supp(x_p)\subseteq supp(x_star)
-                nonsupp_x_star = np.argwhere(x_star <= NON_ZERO)
+                nonsupp_x_star = np.argwhere(x_star <= self.NON_ZERO)
                 b_eq = np.zeros(len(nonsupp_x_star)+1)
                 b_eq[-1] = 1
                 A_eq = np.zeros((len(nonsupp_x_star)+1, action_num_x))
@@ -63,7 +63,7 @@ class Player(DirectSolver):
             # search for a strategy y_p by a linear program
             # supp(y_p)\subseteq supp(y_star)
             else:
-                nonsupp_y_hat = np.argwhere(y_hat <= NON_ZERO)
+                nonsupp_y_hat = np.argwhere(y_hat <= self.NON_ZERO)
                 b_eq = np.zeros(len(nonsupp_y_hat)+1)
                 b_eq[-1] = 1
                 A_eq = np.zeros((len(nonsupp_y_hat)+1, action_num_y))
@@ -73,6 +73,7 @@ class Player(DirectSolver):
                 A_le = R
                 b_le = np.ones(action_num_x)*0.5
                 c = np.zeros(action_num_y)
+                lp_sol = solve_lp(c=c, A_le=A_le, b_le=b_le, A_eq=A_eq, b_eq=b_eq)
 
                 if lp_sol.success:
                     ret[0], ret[1] = x_hat, lp_sol.x

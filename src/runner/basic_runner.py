@@ -12,19 +12,17 @@ class BasicRunner(object):
         self.args = args
 
     @abc.abstractmethod
-    def run(self, record_info = None):
+    def run(self):
         pass
 
     def write_to_file(self, file_name, output_dict):
 
-        RESULT_PATH = self.args.resultpath
-        if not os.path.exists(RESULT_PATH):
-            os.mkdir(RESULT_PATH)
-        SUBDIR_PATH = os.path.join(RESULT_PATH, self.args.dir_name)
-        if not os.path.exists(SUBDIR_PATH):
-            os.mkdir(SUBDIR_PATH)
-        with open(os.path.join(SUBDIR_PATH, file_name + ".json"), 'w') as fp:
+        with open(file_name, 'w') as fp:
             json.dump(output_dict, fp, separators=(",\n",":\n"))
+
+    def _write_to_file(self, output_dict):
+
+        self.write_to_file(os.path.join(self.args.resultpath, self.args.file_name + ".json"), output_dict)
 
     def reset_game(self):
         self.game.reset()

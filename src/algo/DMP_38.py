@@ -7,18 +7,19 @@ class Player(DirectSolver):
 
     def __init__(self, args):
         super(Player, self).__init__(args)
-        self.one_over_epsilon = args.one_over_epsilon if hasattr(args, 'one_over_epsilon') else 2
+        self.one_over_epsilon = args.one_over_epsilon if hasattr(args, 'one_over_epsilon') else 1
 
     def solve(self, game, utility):
 
         actions = game.getActionSpace()
         players = game.players
         assert players == 2, "DMP_38 only works for 2-player games!"
-        ret = self._enumerate_solution(actions, utility)
+        ret, before = self._enumerate_solution(actions, utility)
 
         info = {
             'solver': "DMP_38",
             'overall_policy': [ret[player_id].copy() for player_id in range(players)],
+            'strategy_before_adjust': [before[player_id].copy() for player_id in range(players)],
         }
 
         return ret, info
@@ -81,6 +82,8 @@ class Player(DirectSolver):
 
             c = np.ones(n + m)
             sol = solve_lp(A_le = A_le, b_le = b_le, A_eq = A_eq, b_eq = b_eq, A_ge =A_ge, b_ge = b_ge, c = c)
+            if sol.status != 0:
+                return sol.status, None, None
             return sol.status, sol.x[:n].copy(), sol.x[n:].copy()
 
         eps_over_two = 0.5 / self.one_over_epsilon
@@ -98,9 +101,9 @@ class Player(DirectSolver):
                                     continue
                                 if max(vr, vc) * 3 >= self.one_over_epsilon:
                                     delta = 1.5 - (0.5 * self.one_over_epsilon / max(vr, vc))
-                                    return [delta * alpha + (1 - delta) * x, delta * beta + (1 - delta) * y]
+                                    return [delta * alpha + (1 - delta) * x, delta * beta + (1 - delta) * y], [x, y]
                                 else:
-                                    return [x, y]
+                                    return [x, y], [x, y]
 
 
     def reset(self):

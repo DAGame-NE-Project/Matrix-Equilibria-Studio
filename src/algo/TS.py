@@ -41,6 +41,8 @@ class Player(DirectSolver):
         info = {
             'solver': "TS",
             'adjust_method': self.adjust_method,
+            'line_search_method': self.line_search_method,
+            'delta': self.delta,
             'overall_policy': [ret[player_id].copy() for player_id in range(players)],
             'strategy_before_adjust': [x_s.copy(), y_s.copy()],
         }
