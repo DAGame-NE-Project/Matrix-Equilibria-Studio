@@ -73,7 +73,7 @@ def gen_table(algo_type: str, game_type: str, first_row_col_name: str, second_ro
 '''
     if use_longtable:
         tab_header += '\\endfirsthead'
-        tab_header += f'\\multicolumn{{{len(algo_ids) + 2}}}{{l}}{{\\tablename\\ \\thetable\\ -- (\\textit{{Cont}})}} \\\\\n'
+        tab_header += f'\\multicolumn{{{len(algo_ids) + 2}}}{{l}}{{\\tablename\\ \\thetable\\ -- (\\textit{{Continued}})}} \\\\\n'
         tab_header += '''\\toprule
 \\multicolumn{2}{c|}{Scenario}'''
         for algo in algo_names:
@@ -82,13 +82,13 @@ def gen_table(algo_type: str, game_type: str, first_row_col_name: str, second_ro
 \\midrule
 \\endhead
 '''     
-        tab_header += f'\\bottomrule\n\\multicolumn{{{len(algo_ids) + 2}}}{{c}}{{\\textit{{Continued on next page}}}} \\\\\n'
+        tab_header += f'\\bottomrule\n\\multicolumn{{{len(algo_ids) + 2}}}{{r}}{{\\textit{{Continued on next page}}}} \\\\\n'
         tab_header += '\\endfoot\n\\bottomrule\n\\endlastfoot\n'
 
     # generate the footer of the table
     tab_footer = ''
     if use_longtable:
-        tab_footer += '''\\bottomrule
+        tab_footer += '''
 \\end{longtable}
 '''
     else:
@@ -164,7 +164,10 @@ def gen_table(algo_type: str, game_type: str, first_row_col_name: str, second_ro
                                     tab_body += f' & (\\textbf{{{val:.{precision}f}}})'
                                 else:
                                     tab_body += f' & ({val:.{precision}f})'
-                tab_body += '\\\\\n'
+                tab_body += '\\\\'
+                if row == 0 or size != GameSizes[-1]:
+                    tab_body += '*'
+                tab_body += '\n'
     return tab_header + tab_body + tab_footer
 
 
