@@ -26,7 +26,7 @@ def solve_lp(A_le = None, b_le = None, A_eq = None, b_eq = None, A_ge = None, b_
     if object_func != 'min':
         c = -c
     sol = sp.optimize.linprog(c = c, A_ub = A, b_ub = b, A_eq = A_eq, b_eq = b_eq, method = method, bounds = bounds)
-    if object_func != 'min':
+    if sol.success and object_func != 'min':
         sol.fun = -sol.fun
     return sol
 
