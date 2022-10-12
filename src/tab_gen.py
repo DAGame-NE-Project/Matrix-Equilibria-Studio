@@ -20,7 +20,8 @@ WSNEAlgoNames = ['KS07-$2/3$',
 GAMUTGames = ['BertrandOligopoly', 'CournotDuopoly', 'GrabTheDollar', 'GuessTwoThirdsAve',
               'LocationGame', 'MinimumEffortGame', 'TravelersDilemma', 'WarOfAttrition']
 
-GAMUTGameNames = GAMUTGames
+# abbreviations for the games
+GAMUTGameNames = ['BO', 'CD', 'GTD', 'GT2TA', 'LG', 'MEG', 'TD', 'WOA']
 
 ClassicGames = ['zerosum', 'random']
 
@@ -33,9 +34,13 @@ game_name_list = {'GAMUT': GAMUTGameNames, 'Classic': ClassicGameNames}
 
 single_row_algo_ids = ['kps_75', 'dmp_50']
 
+no_precision_error = ['fgss_6605', 'dfm_50']
+
 GameSizes = [10, 100, 1000]
 
 precision = 4
+
+long_table_thereshold = 4
 
 # generate the body of the table
 # column names: algo, game, size, last_eps, last_ws_eps, ...
@@ -49,10 +54,14 @@ def gen_table(algo_type: str, game_type: str, first_row_col_name: str, second_ro
     algo_names = algo_name_list[algo_type]
     game_ids = game_id_list[game_type]
     game_names = game_name_list[game_type]
-
+    use_longtable = False
     # generate the header of the table
-    tab_header = '''\\begin{tabular}{cc'''
-
+    if len(game_ids) > long_table_thereshold:
+        use_longtable = True
+    if use_longtable:
+        tab_header = '\\begin{longtable}{c|c'
+    else:
+        tab_header = '''\\begin{tabular}{c|c'''
     tab_header += '|c' * len(algo_ids) + '}'
     tab_header += '''
 \\toprule
@@ -62,11 +71,31 @@ def gen_table(algo_type: str, game_type: str, first_row_col_name: str, second_ro
     tab_header += '''\\\\
 \\midrule
 '''
+    if use_longtable:
+        tab_header += '\\endfirsthead'
+        tab_header += f'\\multicolumn{{{len(algo_ids) + 2}}}{{l}}{{\\tablename\\ \\thetable\\ -- (\\textit{{Cont}})}} \\\\\n'
+        tab_header += '''\\toprule
+\\multicolumn{2}{c|}{Scenario}'''
+        for algo in algo_names:
+            tab_header += ' & ' + algo
+        tab_header += '''\\\\
+\\midrule
+\\endhead
+'''     
+        tab_header += f'\\bottomrule\n\\multicolumn{{{len(algo_ids) + 2}}}{{c}}{{\\textit{{Continued on next page}}}} \\\\\n'
+        tab_header += '\\endfoot\n\\bottomrule\n\\endlastfoot\n'
 
     # generate the footer of the table
-    tab_footer = '''\\bottomrule
+    tab_footer = ''
+    if use_longtable:
+        tab_footer += '''\\bottomrule
+\\end{longtable}
+'''
+    else:
+        tab_footer += '''\\bottomrule
 \\end{tabular}
 '''
+    # whether to use the textbf
 
     def is_sota(item: float, game: str, size: int, comp_col_name: str) -> bool:
         filtered = df[(np.isin(df['algo'], algo_ids)) &
@@ -110,7 +139,7 @@ def gen_table(algo_type: str, game_type: str, first_row_col_name: str, second_ro
                             val = filtered[first_row_col_name].to_numpy().flatten()[
                                 0]
                             if np.isinf(val):
-                                tab_body += ' \\multirow{2}{*}{precision error}'
+                                tab_body += ' \\multirow{2}{*}{precision error}' if algo not in no_precision_error else ' \\multirow{2}{*}{timeout}'
                                 continue
                             assert not isnan(
                                 val), 'NaN value found in first row: ' + first_row_col_name + ', ' + algo+', ' + game + ', ' + str(size)
