@@ -21,7 +21,7 @@ GAMUTGames = ['BertrandOligopoly', 'CournotDuopoly', 'GrabTheDollar', 'GuessTwoT
               'LocationGame', 'MinimumEffortGame', 'TravelersDilemma', 'WarOfAttrition']
 
 # abbreviations for the games
-GAMUTGameNames = ['BO', 'CD', 'GTD', 'GT2TA', 'LG', 'MEG', 'TD', 'WOA']
+GAMUTGameNames = ['BO', 'CD', 'GTD', 'GTTA', 'LG', 'MEG', 'TD', 'WOA']
 
 ClassicGames = ['zerosum', 'random']
 
