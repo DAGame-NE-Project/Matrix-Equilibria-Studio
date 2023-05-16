@@ -36,50 +36,37 @@ For equilibrium solvers, we divide them into two different kinds, one-shot solve
 
 ### Traditional (NE)
 
-1. Support Enumeration. (DONE)
-2. Lemke-Howson. (DONE)
+1. Support Enumeration. 
+2. Lemke-Howson.
 
 ### Approximate NE
 
-1. KPS-3/4 (easy) (DONE)
-2. DMP-0.5 (easy) (DONE)
-3. Czumaj-0.38 (easy) (DONE)
-4. DMP-0.38 (hard) (DONE)
-5. BBM-0.36 (hard) (DONE)
-6. TS-0.3393 (hard) (TO BE DONE)
-7. Gao (very hard)
-8. 1/3 (hard) (TO BE DONE)
+1. KPS-3/4 
+2. DMP-0.5 
+3. CDFFJS-0.38 
+4. DMP-0.38 
+5. BBM-0.36 
+6. TS-0.3393 
+7. DFM-1/3
 
 ### Special Case NE
 
-1. solve zero-sum games by LP (normal)
-2. symmetric games-1/3 (hard)
+1. solve zero-sum games by LP
 
 ### Online Learning (CCE)
 
-1. Fictitious Play. (DONE)
-2. Hedge. (DONE)
-3. Regret Matching. (DONE)
-4. Multiplicative Weights Update. (DONE)
+1. Fictitious Play.
+2. Hedge.
+3. Regret Matching.
+4. Multiplicative Weights Update.
 
 ### Well-supported Nash Equilibrium (WSNE)
 
 1. KS-2/3
-2. CFM-1/2 (symmetric games only)
-3. FGSS-0.6607
-4. CDFFJS-0.6528
-5. DFM-1/2
+2. FGSS-0.6607
+3. CDFFJS-0.6528
+4. DFM-1/2
 
-### Evolutionary (ESS?)
+### Evolutionary (ESS)
 
 1. Replicator Dynamics.
-
-### Continuous Game
-
-1. SGA.
-2. Fictitious Play (Continuous Action Space).
-
-### Deep Learning
-
-1. Double Oracle (Structure).
-2. PSRO.
