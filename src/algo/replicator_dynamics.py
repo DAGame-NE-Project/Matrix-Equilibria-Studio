@@ -33,7 +33,9 @@ class ReplicatorDynamics(IterativeSolver):
         tmp_ret = tuple()
         for player_id in range(players):
             policy = np.array(info['agents_population'][player_id])
+            policy = np.maximum(policy, 0)
             policy = policy / np.sum(policy)
+            # set negative part zero
             ret.append(policy)
             tmp_ret = tmp_ret + tuple([int(np.random.choice(np.array(range(actions[player_id])), p = policy))])
 
